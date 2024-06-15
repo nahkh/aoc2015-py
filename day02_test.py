@@ -2,7 +2,7 @@ import unittest
 from day02 import *
 
 
-class TestDay1(unittest.TestCase):
+class TestDay2(unittest.TestCase):
 
     def test_parse_box_dimensions(self):
         self.assertEqual(Package.parse("7x8x2"), Package(7, 8, 2))
