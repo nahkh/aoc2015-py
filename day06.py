@@ -61,6 +61,16 @@ class InstructionType(Enum):
         else:
             assert False, f'Unable to parse instruction in line "{line}"'
 
+    def as_brightness(self) -> int:
+        if self == InstructionType.TURN_ON:
+            return 1
+        elif self == InstructionType.TURN_OFF:
+            return -1
+        elif self == InstructionType.TOGGLE:
+            return 2
+        else:
+            assert False, f'Unhandled instruction type {self}'
+
 
 @dataclasses.dataclass(frozen=True)
 class Instruction:
@@ -111,6 +121,25 @@ class LightField:
                 total += 1
         return total
 
+@dataclasses.dataclass
+class BrightnessField:
+    field: Dict[Position, int]
+
+    @classmethod
+    def create(cls, width: int, height: int) -> BrightnessField:
+        return BrightnessField({pos: 0 for pos in PositionRange(0, width - 1, 0, height - 1).positions()})
+
+    def apply(self, instruction: Instruction):
+        for position in instruction.position_range.positions():
+            assert position in self.field, f'{position} out of bounds, in instruction {instruction}'
+            self.field[position] = max(0, self.field[position] + instruction.instruction_type.as_brightness())
+
+    def count_brightness(self) -> int:
+        total = 0
+        for pos, light_state in self.field.items():
+            total += light_state
+        return total
+
 
 def part1(lines: List[str]):
     field = LightField.create(1000, 1000)
@@ -121,10 +150,20 @@ def part1(lines: List[str]):
     print(f'Day 6, part 1: The number of enabled lights is {field.count_lights()}')
 
 
+def part2(lines: List[str]):
+    field = BrightnessField.create(1000, 1000)
+    for i, line in enumerate(lines):
+        instruction = Instruction.parse(line)
+        field.apply(instruction)
+        print(f'{100 * i / len(lines):.2f}% complete')
+    print(f'Day 6, part 2: The total brightness is {field.count_brightness()}')
+
+
 def main():
     with open('input06.txt') as f:
         lines = f.readlines()
         part1(lines)
+        part2(lines)
 
 
 if __name__ == '__main__':
