@@ -12,6 +12,10 @@ class TestDay1(unittest.TestCase):
         self.assertEqual(calculate_needed_wrapping_paper((2, 3, 4)), 58)
         self.assertEqual(calculate_needed_wrapping_paper((1, 1, 10)), 43)
 
+    def test_calculate_needed_ribbon(self):
+        self.assertEqual(calculate_needed_ribbon((2, 3, 4)), 34)
+        self.assertEqual(calculate_needed_ribbon((1, 1, 10)), 14)
+
 
 if __name__ == '__main__':
     unittest.main()
