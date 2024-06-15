@@ -54,10 +54,30 @@ def part1(instructions):
     print(f'Day 3, part 1: Santa visited {len(visited_positions)} houses at least once')
 
 
+def part2(instructions):
+    position_a = Position(0, 0)
+    position_b = Position(0, 0)
+    a_is_moving = True
+    visited_positions = {position_a}
+    for character in instructions.strip():
+        direction = Direction.parse(character)
+        if a_is_moving:
+            position_a += direction.as_position()
+            visited_positions.add(position_a)
+        else:
+            position_b += direction.as_position()
+            visited_positions.add(position_b)
+        a_is_moving = not a_is_moving
+
+    print(f'Day 3, part 2: Santa and robot santa visited {len(visited_positions)} houses at least once')
+
+
+
 def main():
     with open('input03.txt') as f:
         instructions = f.readline()
         part1(instructions)
+        part2(instructions)
 
 
 if __name__ == '__main__':
