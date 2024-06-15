@@ -1,3 +1,8 @@
-import day01
+def main():
+    with open("input02.txt") as f:
+        for line in f.readlines():
+            print(line.strip())
 
-print("Hello, Eli!")
+
+if __name__ == "__main__":
+    main()
