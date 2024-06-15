@@ -16,9 +16,9 @@ def calculate_needed_wrapping_paper(dimensions: Tuple[int, int, int]) -> int:
 
 def calculate_needed_ribbon(dimensions: Tuple[int, int, int]) -> int:
     length, width, height = dimensions
-    perimiters = [2 * (length + width), 2 * (length + height), 2 * (height + width)]
-    perimiters.sort()
-    return perimiters[0] + length * width * height
+    perimeters = [2 * (length + width), 2 * (length + height), 2 * (height + width)]
+    perimeters.sort()
+    return perimeters[0] + length * width * height
 
 
 def part1():
