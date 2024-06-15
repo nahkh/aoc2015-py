@@ -1,31 +1,35 @@
-from typing import Tuple
+from __future__ import annotations
+import dataclasses
 
 
-def parse_box_dimensions(line: str) -> Tuple[int, int, int]:
-    parts = tuple(map(int, line.split("x")))
-    assert len(parts) == 3
-    return parts
+@dataclasses.dataclass(frozen=True)
+class Package:
+    length: int
+    width: int
+    height: int
 
+    @classmethod
+    def parse(cls, line) -> Package:
+        parts = tuple(map(int, line.split("x")))
+        assert len(parts) == 3
+        return Package(parts[0], parts[1], parts[2])
 
-def calculate_needed_wrapping_paper(dimensions: Tuple[int, int, int]) -> int:
-    length, width, height = dimensions
-    sizes = [length * width, width * height, length * height]
-    sizes.sort()
-    return sizes[0] + 2 * sum(sizes)
+    def needed_wrapping_paper(self) -> int:
+        sizes = [self.length * self.width, self.width * self.height, self.length * self.height]
+        sizes.sort()
+        return sizes[0] + 2 * sum(sizes)
 
-
-def calculate_needed_ribbon(dimensions: Tuple[int, int, int]) -> int:
-    length, width, height = dimensions
-    perimeters = [2 * (length + width), 2 * (length + height), 2 * (height + width)]
-    perimeters.sort()
-    return perimeters[0] + length * width * height
+    def needed_ribbon(self) -> int:
+        perimeters = [2 * (self.length + self.width), 2 * (self.length + self.height), 2 * (self.height + self.width)]
+        perimeters.sort()
+        return perimeters[0] + self.length * self.width * self.height
 
 
 def part1():
     with open("input02.txt") as f:
         needed_wrapping_paper = 0
         for line in f.readlines():
-            needed_wrapping_paper += calculate_needed_wrapping_paper(parse_box_dimensions(line.strip()))
+            needed_wrapping_paper += Package.parse(line.strip()).needed_wrapping_paper()
         print(f"Day 2, part 1: Needed wrapping paper {needed_wrapping_paper}")
 
 
@@ -33,7 +37,7 @@ def part2():
     with open("input02.txt") as f:
         needed_ribbon = 0
         for line in f.readlines():
-            needed_ribbon += calculate_needed_ribbon(parse_box_dimensions(line.strip()))
+            needed_ribbon += Package.parse(line.strip()).needed_ribbon()
         print(f"Day 2, part 2: Needed ribbon {needed_ribbon}")
 
 
