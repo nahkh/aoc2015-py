@@ -3,7 +3,6 @@ import dataclasses
 from enum import Enum
 from typing import Tuple, Dict, List
 
-
 MAX_16 = 65535
 
 
@@ -125,10 +124,21 @@ def part1(lines: List[str]):
     print(f'Day 7, part 1: The value on wire "{wire}" is {execution_graph.evalute(wire)}')
 
 
+def part2(lines: List[str]):
+    operations = [Operation.parse(line) for line in lines]
+    execution_graph = ExecutionGraph.create(operations)
+    wire = 'a'
+    value_of_a = execution_graph.evalute(wire)
+    execution_graph.computed_values = {'b': value_of_a}
+    print(
+        f'Day 7, part 2: The value on wire "{wire}" is {execution_graph.evalute(wire)} after overriding "b" with {value_of_a}')
+
+
 def main():
     with open('input07.txt') as f:
         lines = f.readlines()
         part1(lines)
+        part2(lines)
 
 
 if __name__ == '__main__':
