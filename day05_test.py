@@ -15,6 +15,5 @@ class TestDay5(unittest.TestCase):
         self.assertFalse(line_contains_any_two_pairs("ieodomkazucvgmuy"))
 
 
-
 if __name__ == '__main__':
     unittest.main()

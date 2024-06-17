@@ -26,3 +26,6 @@ NOT y -> i
             'x': 123,
             'y': 456})
 
+
+if __name__ == '__main__':
+    unittest.main()

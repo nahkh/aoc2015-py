@@ -33,5 +33,6 @@ class TestDay6(unittest.TestCase):
         field.apply(Instruction(InstructionType.TURN_OFF, PositionRange(499, 500, 499, 500)))
         self.assertEqual(field.count_lights(), 998996)
 
+
 if __name__ == '__main__':
     unittest.main()
