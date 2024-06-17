@@ -15,6 +15,12 @@ class TestDay8(unittest.TestCase):
         test_data = '""\n"abc"\n"\\x27"\n"aaa\\"aaa"'.splitlines()
         self.assertEqual(summary_difference(test_data), (23, 11, 12))
 
+    def test_encode(self):
+        self.assertEqual(encode('""'), '"\\"\\""')
+        self.assertEqual(encode('"abc"'), '"\\"abc\\""')
+        self.assertEqual(encode('"aaa\\"aaa"'), '"\\"aaa\\\\\\"aaa\\""')
+        self.assertEqual(encode('"\\x27"'), '"\\"\\\\x27\\""')
+
 
 if __name__ == '__main__':
     unittest.main()

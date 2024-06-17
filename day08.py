@@ -60,10 +60,31 @@ def part1(lines: List[str]):
     print(f'  The difference: {diff}')
 
 
+def encode(line: str) -> str:
+    output = '"'
+    for c in line:
+        if c == '"':
+            output += '\\"'
+        elif c == '\\':
+            output += '\\\\'
+        else:
+            output += c
+    return output + '"'
+
+
+def part2(lines: List[str]):
+    in_storage, in_memory, diff = summary_difference(list(map(encode, lines)))
+    print('Day 8, part 2:')
+    print(f'  The number of characters in storage {in_storage}')
+    print(f'  The number of characters in memory {in_memory}')
+    print(f'  The difference: {diff}')
+
+
 def main():
     with open('input08.txt') as f:
         lines = f.readlines()
         part1(lines)
+        part2(lines)
 
 
 if __name__ == '__main__':
