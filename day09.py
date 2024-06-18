@@ -43,16 +43,29 @@ class Graph:
                 minimum = length
         return minimum
 
+    def find_longest_path(self) -> int:
+        maximum = None
+        for path, length in self.generate_all_paths():
+            if maximum is None or maximum < length:
+                maximum = length
+        return maximum
+
 
 def part1(lines: List[str]):
     graph = Graph.create(lines)
     print(f'Day 9, part 1: The shortest route is {graph.find_shortest_path()}')
 
 
+def part2(lines: List[str]):
+    graph = Graph.create(lines)
+    print(f'Day 9, part 2: The shortest route is {graph.find_longest_path()}')
+
+
 def main():
     with open('input09.txt') as f:
         lines = f.readlines()
         part1(lines)
+        part2(lines)
 
 
 if __name__ == '__main__':
