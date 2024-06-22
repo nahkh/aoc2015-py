@@ -61,8 +61,13 @@ def part1():
     print(f'Day 11, part 1: Santa\'s next password will be {find_next_valid_password("cqjxjnds")}')
 
 
+def part2():
+    print(f'Day 11, part 1: Santa\'s next password will be {find_next_valid_password("cqjxxyzz")}')
+
+
 def main():
     part1()
+    part2()
 
 
 if __name__ == '__main__':
