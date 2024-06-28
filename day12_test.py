@@ -14,6 +14,14 @@ class TestDay12(unittest.TestCase):
         self.assertEqual(sum_numbers('[]'), 0)
         self.assertEqual(sum_numbers('{}'), 0)
 
+    def test_sum_numbers_without_reds(self):
+        self.assertEqual(sum_numbers_without_reds('[1,2,3]'), 6)
+        self.assertEqual(sum_numbers_without_reds('[1,{"c":"red","b":2},3]'), 4)
+        self.assertEqual(sum_numbers_without_reds('{"d":"red","e":[1,2,3,4],"f":5}'), 0)
+        self.assertEqual(sum_numbers_without_reds('{"d":"red","e":[1,2,3,4],"f":5}'), 0)
+        self.assertEqual(sum_numbers_without_reds('[1,"red",5]'), 6)
+
+
 
 if __name__ == '__main__':
     unittest.main()
