@@ -1,6 +1,6 @@
 from __future__ import annotations
 import dataclasses
-from typing import List, Generator
+from typing import List, Generator, Iterable
 
 
 @dataclasses.dataclass(frozen=True)
@@ -27,6 +27,7 @@ class GridState:
     min_y: int
     max_y: int
     enabled_lights: frozenset[Position]
+    always_on_lights: frozenset[Position]
 
     @classmethod
     def parse(cls, lines: List[str]) -> GridState:
@@ -39,7 +40,7 @@ class GridState:
         max_x = max(map(lambda z: z.x, enabled_lights))
         min_y = min(map(lambda z: z.y, enabled_lights))
         max_y = max(map(lambda z: z.y, enabled_lights))
-        return GridState(0, min_x, max_x, min_y, max_y, frozenset(enabled_lights))
+        return GridState(0, min_x, max_x, min_y, max_y, frozenset(enabled_lights), frozenset())
 
     def count_lit_neighbors(self, position: Position) -> int:
         lit_neighbors = 0
@@ -49,6 +50,8 @@ class GridState:
         return lit_neighbors
 
     def is_new_state_lit(self, position: Position) -> bool:
+        if position in self.always_on_lights:
+            return True
         lit_neighbors = self.count_lit_neighbors(position)
         if position in self.enabled_lights:
             return 2 <= lit_neighbors <= 3
@@ -65,10 +68,35 @@ class GridState:
         for position in self.positions():
             if self.is_new_state_lit(position):
                 new_lights.add(position)
-        return GridState(self.step + 1, self.min_x, self.max_x, self.min_y, self.max_y, frozenset(new_lights))
+        return GridState(self.step + 1, self.min_x, self.max_x, self.min_y, self.max_y, frozenset(new_lights),
+                         self.always_on_lights)
+
+    def set_always_on_lights(self, positions: Iterable[Position]) -> GridState:
+        always_on_lights = frozenset(positions)
+        new_lights = set(self.enabled_lights).union(always_on_lights)
+        return GridState(self.step, self.min_x, self.max_x, self.min_y, self.max_y, frozenset(new_lights),
+                         always_on_lights)
 
     def count_lit_lights(self) -> int:
         return len(self.enabled_lights)
+
+    def corners(self) -> Generator[Position]:
+        yield Position(self.min_x, self.min_y)
+        yield Position(self.min_x, self.max_y)
+        yield Position(self.max_x, self.min_y)
+        yield Position(self.max_x, self.max_y)
+
+    def render(self) -> str:
+        output = ''
+        for y in range(self.min_y, self.max_y + 1):
+            for x in range(self.min_x, self.max_x + 1):
+                position = Position(x, y)
+                if position in self.enabled_lights:
+                    output += '#'
+                else:
+                    output += '.'
+            output += '\n'
+        return output
 
 
 def part1(initial_state: GridState):
@@ -79,10 +107,19 @@ def part1(initial_state: GridState):
     print(f'Day 18, part 1: The number of lit lights after {number_of_steps} steps is {state.count_lit_lights()}')
 
 
+def part2(initial_state: GridState):
+    number_of_steps = 100
+    state = initial_state.set_always_on_lights(initial_state.corners())
+    for i in range(number_of_steps):
+        state = state.iterate()
+    print(f'Day 18, part 2: The number of lit lights after {number_of_steps} steps is {state.count_lit_lights()}')
+
+
 def main():
     with open('input18.txt') as f:
         initial_state = GridState.parse(f.readlines())
         part1(initial_state)
+        part2(initial_state)
 
 
 if __name__ == '__main__':
