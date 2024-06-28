@@ -3,7 +3,8 @@ import dataclasses
 from enum import Enum
 import itertools
 import re
-from typing import Tuple, Dict, List, Generator
+from typing import Tuple, Dict, List, Generator, Callable
+
 
 INGREDIENT_PATTERN = re.compile(
     r'^(\w+): capacity (-?\d+), durability (-?\d+), flavor (-?\d+), texture (-?\d+), calories (-?\d+)')
@@ -95,10 +96,13 @@ class IngredientList:
                 for recipe in self.all_possible_recipes(remaining_volume - i, new_used_ingredients):
                     yield recipe
 
-    def find_best_recipe(self) -> Recipe:
+    def find_best_recipe(self, predicate: Callable[[Recipe], bool] = None) -> Recipe:
         best_recipe = None
         best_score = 0
         for recipe in self.all_possible_recipes():
+            # if the predicate exists but is not passed, skip the recipe
+            if predicate and not predicate(recipe):
+                continue
             score = recipe.score()
             if not best_recipe or best_score < score:
                 best_score = score
@@ -121,15 +125,31 @@ class Recipe:
             score *= property_score
         return score
 
+    def get_calories(self) -> int:
+        calories = 0
+        for ingredient, amount in self.ingredients.items():
+            calories += ingredient.properties[IngredientProperty.CALORIES] * amount
+        return calories
+
 
 def part1(ingredient_list: IngredientList):
     print(f'Day 15, part 1: The best score achievable is {ingredient_list.find_best_recipe().score()}')
+
+
+def recipe_has_500_calories(recipe: Recipe) -> bool:
+    return recipe.get_calories() == 500
+
+
+def part2(ingredient_list: IngredientList):
+    score = ingredient_list.find_best_recipe(recipe_has_500_calories).score()
+    print(f'Day 15, part 2: The best score with exactly 500 calories is {score}')
 
 
 def main():
     with open('input15.txt') as f:
         ingredient_list = IngredientList.parse(f.readlines())
         part1(ingredient_list)
+        part2(ingredient_list)
 
 
 if __name__ == '__main__':
