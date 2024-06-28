@@ -2,7 +2,7 @@ import unittest
 from day15 import *
 
 
-class TestDay145(unittest.TestCase):
+class TestDay15(unittest.TestCase):
 
     def setUp(self) -> None:
         with open("input15_test.txt") as f:
