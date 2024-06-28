@@ -11,6 +11,12 @@ class TestDay19(unittest.TestCase):
     def test_count_distinct_replacements(self):
         self.assertEqual(7, self.plant.count_distinct_replacements())
 
+    def test_search(self):
+        self.assertEqual(6, self.plant.search())
+
+    def test_reverse_search(self):
+        self.assertEqual(6, self.plant.reverse_search(self.plant.medicine_molecule))
+
 
 if __name__ == '__main__':
     unittest.main()
