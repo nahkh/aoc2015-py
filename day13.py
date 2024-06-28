@@ -11,7 +11,7 @@ class Person:
 
     def __add__(self, other: Person) -> int:
         assert isinstance(other, Person), f'{other} is not a Person'
-        return self.preferences[other.name] + other.preferences[self.name]
+        return self.preferences.get(other.name, 0) + other.preferences.get(self.name, 0)
 
 @dataclasses.dataclass
 class Table:
@@ -20,7 +20,9 @@ class Table:
     name_to_person: Dict[str, Person]
 
     @classmethod
-    def parse(cls, lines: List[str]) -> Table:
+    def parse(cls, lines: List[str], ambivalent_people: List[str] = None) -> Table:
+        if not ambivalent_people:
+            ambivalent_people = []
         people = []
         current_name = None
         current_preferences = {}
@@ -38,6 +40,8 @@ class Table:
             current_preferences[neighbor] = happiness_change
         if current_name is not None:
             people.append(Person(current_name, current_preferences))
+        for ambivalent_person in ambivalent_people:
+            people.append(Person(ambivalent_person, {}))
         return Table(people, tuple(map(lambda x: x.name, people)), {x.name: x for x in people})
 
     def evaluate_ordering(self, ordering: Iterable[str]) -> int:
@@ -73,10 +77,18 @@ def part1(lines: List[str]):
     print(f' {", ".join(ordering)}')
 
 
+def part2(lines: List[str]):
+    table = Table.parse(lines, ["me"])
+    ordering, value = table.find_max_ordering()
+    print(f'Day 13, part 2: The highest happiness change is {value}, with the following ordering (including me):')
+    print(f' {", ".join(ordering)}')
+
+
 def main():
     with open('input13.txt') as f:
         lines = f.readlines()
         part1(lines)
+        part2(lines)
 
 
 if __name__ == '__main__':
