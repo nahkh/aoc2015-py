@@ -132,6 +132,16 @@ def find_cheapest_equipment_that_beats(boss: Character) -> EquipmentLoadout:
     return best_loadout
 
 
+def find_most_expensive_equipment_that_loses_to(boss: Character) -> EquipmentLoadout:
+    worst_loadout = None
+    for loadout in EquipmentLoadout.all_options():
+        if worst_loadout and worst_loadout.cost() > loadout.cost():
+            continue
+        if not does_player_win(loadout.as_combatant(), boss) and (not worst_loadout or worst_loadout.cost() < loadout.cost()):
+            worst_loadout = loadout
+    return worst_loadout
+
+
 def part1(lines: List[str]):
     boss = Character.parse_boss(lines)
     equipment = find_cheapest_equipment_that_beats(boss)
@@ -139,10 +149,18 @@ def part1(lines: List[str]):
     print(f'Items: {", ".join(map(lambda x: x.name, equipment.items()))}')
 
 
+def part2(lines: List[str]):
+    boss = Character.parse_boss(lines)
+    equipment = find_most_expensive_equipment_that_loses_to(boss)
+    print(f'Day 21, part 2: The most expensive equipment that loses to the boss is {equipment.cost()}')
+    print(f'Items: {", ".join(map(lambda x: x.name, equipment.items()))}')
+
+
 def main():
     with open('input21.txt') as f:
         lines = f.readlines()
         part1(lines)
+        part2(lines)
 
 
 if __name__ == '__main__':
