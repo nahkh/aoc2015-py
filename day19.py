@@ -132,7 +132,7 @@ class MedicinePlant:
             cache[molecule] = PRACTICALLY_INFINITE
             # We know that there can only be one e, at the very beginning
             return PRACTICALLY_INFINITE
-        if replacement_count > best_known:
+        if replacement_count >= best_known:
             cache[molecule] = min(cache.get(molecule, PRACTICALLY_INFINITE), replacement_count)
             return best_known
         for precursor in self.get_valid_precursors(molecule):
